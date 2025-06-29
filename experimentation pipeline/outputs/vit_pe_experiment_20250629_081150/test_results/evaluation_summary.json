@@ -1,0 +1,67 @@
+{
+  "model_summary": {
+    "model_type": "Vision Transformer",
+    "positional_encoding": "2d_sincos (add mode)",
+    "total_parameters": 3173898,
+    "image_size": 32,
+    "patch_size": 4,
+    "dim": 256,
+    "depth": 6,
+    "heads": 8
+  },
+  "attack_results": {
+    "phase_weak": {
+      "clean_accuracy": 83.28999999999999,
+      "adversarial_accuracy": 36.15,
+      "accuracy_drop": 47.13999999999999,
+      "total_samples": 10000
+    },
+    "phase_strong": {
+      "clean_accuracy": 83.28999999999999,
+      "adversarial_accuracy": 31.65,
+      "accuracy_drop": 51.63999999999999,
+      "total_samples": 10000
+    },
+    "magnitude_weak": {
+      "clean_accuracy": 83.28999999999999,
+      "adversarial_accuracy": 35.77,
+      "accuracy_drop": 47.51999999999999,
+      "total_samples": 10000
+    },
+    "magnitude_strong": {
+      "clean_accuracy": 83.28999999999999,
+      "adversarial_accuracy": 31.5,
+      "accuracy_drop": 51.78999999999999,
+      "total_samples": 10000
+    },
+    "normal_weak": {
+      "clean_accuracy": 83.28999999999999,
+      "adversarial_accuracy": 36.08,
+      "accuracy_drop": 47.209999999999994,
+      "total_samples": 10000
+    },
+    "normal_strong": {
+      "clean_accuracy": 83.28999999999999,
+      "adversarial_accuracy": 35.88,
+      "accuracy_drop": 47.40999999999999,
+      "total_samples": 10000
+    },
+    "low_freq": {
+      "clean_accuracy": 83.28999999999999,
+      "adversarial_accuracy": 36.08,
+      "accuracy_drop": 47.209999999999994,
+      "total_samples": 10000
+    },
+    "high_freq": {
+      "clean_accuracy": 83.28999999999999,
+      "adversarial_accuracy": 36.120000000000005,
+      "accuracy_drop": 47.16999999999999,
+      "total_samples": 10000
+    }
+  },
+  "average_metrics": {
+    "clean_accuracy": 83.28999999999999,
+    "adversarial_accuracy": 34.90375,
+    "accuracy_drop": 48.38624999999999
+  }
+}
