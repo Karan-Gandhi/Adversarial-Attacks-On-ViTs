@@ -26,8 +26,10 @@ class RoPE2DPositionalEncoding(nn.Module):
         self.w = w
         self.theta = theta
         
-        # RoPE frequencies
-        freqs = 1.0 / (theta ** (torch.arange(0, dim, 2).float() / dim))
+        # RoPE frequencies - create enough frequencies for the largest possible head_dim
+        # We'll select the appropriate subset in get_freqs()
+        max_freqs = max(64, dim)  # Ensure we have enough frequencies
+        freqs = 1.0 / (theta ** (torch.arange(0, max_freqs, 2).float() / max_freqs))
         self.register_buffer('freqs', freqs)
         
         # Precompute position grids
@@ -41,14 +43,27 @@ class RoPE2DPositionalEncoding(nn.Module):
         self.register_buffer('grid_y', grid_y.flatten())
         self.register_buffer('grid_x', grid_x.flatten())
         
-    def get_freqs(self, seq_len, device):
-        """Get frequency tensors for the given sequence length"""
-        # Use half frequencies for each dimension (y and x)
-        freqs_y = torch.outer(self.grid_y[:seq_len], self.freqs[:self.dim//4]).to(device)
-        freqs_x = torch.outer(self.grid_x[:seq_len], self.freqs[:self.dim//4]).to(device)
+    def get_freqs(self, seq_len, head_dim, device):
+        """Get frequency tensors for the given sequence length and head dimension"""
+        # Use half of head_dim for each dimension (y and x)
+        half_head_dim = head_dim // 2
         
-        # Combine y and x frequencies
+        # Get the appropriate number of frequencies for the head dimension
+        freqs_per_dim = self.freqs[:half_head_dim // 2]
+        
+        # Create frequencies for y and x positions
+        freqs_y = torch.outer(self.grid_y[:seq_len], freqs_per_dim).to(device)
+        freqs_x = torch.outer(self.grid_x[:seq_len], freqs_per_dim).to(device)
+        
+        # Combine y and x frequencies to match head_dim
         freqs = torch.cat([freqs_y, freqs_x], dim=-1)
+        
+        # If the combined freqs don't match head_dim, pad or truncate
+        if freqs.size(-1) < head_dim:
+            padding = torch.zeros(seq_len, head_dim - freqs.size(-1), device=device)
+            freqs = torch.cat([freqs, padding], dim=-1)
+        elif freqs.size(-1) > head_dim:
+            freqs = freqs[:, :head_dim]
         
         # Compute cos and sin
         freqs_cos = freqs.cos()
@@ -68,13 +83,14 @@ class RoPE2DPositionalEncoding(nn.Module):
     def apply_rope_to_attention(self, q, k, v):
         """Apply RoPE to query and key tensors during attention computation"""
         # q, k shape: (batch, heads, seq_len, head_dim)
-        seq_len = q.size(2) - 1  # Exclude class token
+        batch_size, num_heads, seq_len, head_dim = q.shape
+        seq_len_patches = seq_len - 1  # Exclude class token
         
         # Get frequencies for patches (excluding class token)
-        freqs_cos, freqs_sin = self.get_freqs(seq_len, q.device)
+        freqs_cos, freqs_sin = self.get_freqs(seq_len_patches, head_dim, q.device)
         
         # Add batch and head dimensions to freqs
-        freqs_cos = freqs_cos.unsqueeze(0).unsqueeze(0)  # (1, 1, seq_len, dim//2)
+        freqs_cos = freqs_cos.unsqueeze(0).unsqueeze(0)  # (1, 1, seq_len_patches, head_dim)
         freqs_sin = freqs_sin.unsqueeze(0).unsqueeze(0)
         
         # Split q and k into class token and patches
