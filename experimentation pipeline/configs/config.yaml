@@ -1,0 +1,11 @@
+model:
+  # ViT Parameters, also takes in the positional encodings
+
+data:
+  # Data augmentation parameters always use CIFAR-10
+
+training:
+  # Training paramenters, (early stopping, epochs, checkpoint save dir)
+
+testing:
+  # Save directory and which the attacks to run
