@@ -1,2 +1,8 @@
 /ViT_Our_PE_Hyperparam_search/data
 /APE/data
+*.pth
+*.pt
+*.h5
+*.tar.gz
+/data
+*/data/
