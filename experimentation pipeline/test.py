@@ -133,7 +133,7 @@ def main():
         print(f"  {key}: {value}")
     
     # Create data loaders
-    _, test_loader = get_data_loaders(config)
+    _, test_loader, _ = get_data_loaders(config)
     
     # Run attacks
     test_config = config['testing']

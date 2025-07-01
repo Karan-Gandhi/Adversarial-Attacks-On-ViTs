@@ -39,6 +39,15 @@ class EarlyStopping:
             return self.counter >= self.patience
 
 
+def seed_everything(seed=42):
+    import random, numpy as np
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
 def train_one_epoch(model, train_loader, optimizer, criterion, device, epoch, writer, log_every_n_steps):
     """Train for one epoch"""
     model.train()
@@ -166,9 +175,10 @@ def main():
     print(f"Using device: {device}")
     
     # Set random seed
-    torch.manual_seed(config['experiment']['seed'])
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed(config['experiment']['seed'])
+    # torch.manual_seed(config['experiment']['seed'])
+    # if torch.cuda.is_available():
+    #     torch.cuda.manual_seed(config['experiment']['seed'])
+    seed_everything(config['experiment'].get('seed', 42))
     
     # Create output directories
     experiment_name = config['experiment']['name']
@@ -182,7 +192,7 @@ def main():
     shutil.copy(args.config, f"{output_dir}/config.yaml")
     
     # Create data loaders
-    train_loader, test_loader = get_data_loaders(config)
+    train_loader, test_loader, val_loader = get_data_loaders(config)
     
     # Build model
     model = build_model(config)
@@ -257,7 +267,7 @@ def main():
         train_accs.append(train_acc)
         
         # Validate
-        val_loss, val_acc = validate(model, test_loader, criterion, device)
+        val_loss, val_acc = validate(model, val_loader, criterion, device)
         val_losses.append(val_loss)
         val_accs.append(val_acc)
         

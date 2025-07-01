@@ -1,6 +1,7 @@
 import torch
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
+from torch.utils.data import random_split
 
 
 def get_data_transforms(config):
@@ -8,16 +9,27 @@ def get_data_transforms(config):
     data_config = config['data']
     
     # Base transforms
-    train_transforms = [transforms.ToTensor()]
+    train_transforms = []
     test_transforms = [transforms.ToTensor()]
-    
+
+    # g = torch.Generator()
+    # g.manual_seed(data_config.get('transforms_seed', 42))
+
     # Add augmentations for training
     if data_config['augmentation']['random_crop']:
-        train_transforms.insert(0, transforms.RandomCrop(32, padding=4))
-    
+        train_transforms.append(transforms.RandomCrop(32, padding=4))
+
     if data_config['augmentation']['random_horizontal_flip']:
-        train_transforms.insert(-1, transforms.RandomHorizontalFlip())
+        train_transforms.append(transforms.RandomHorizontalFlip())
+
+    if data_config['augmentation']['rand_augment']:
+        train_transforms.append(transforms.RandAugment(
+            num_ops=data_config['augmentation']['rand_augment_num_ops'],
+            magnitude=data_config['augmentation']['rand_augment_magnitude']
+        ))
     
+    train_transforms.append(transforms.ToTensor())
+
     # Add normalization
     if data_config['augmentation']['normalize']:
         normalize = transforms.Normalize(
@@ -62,12 +74,34 @@ def get_data_loaders(config):
     data_config = config['data']
     train_dataset, test_dataset = get_datasets(config)
     
+    val_split = data_config.get('val_split', 0.1)
+    generator = torch.Generator().manual_seed(data_config.get('split_seed', 42))
+    num_train = len(train_dataset)
+    num_val = int(num_train * val_split)
+    num_train = num_train - num_val
+
+    train_subset, val_subset = random_split(train_dataset, [num_train, num_val], generator= generator)
+
+    train_dataset = train_subset
+    val_dataset = val_subset
+    val_dataset.transform = test_dataset.transform  # Use same transform as test dataset
+
+    val_loader = DataLoader(
+        val_dataset,
+        batch_size=data_config['batch_size'],
+        shuffle=False,
+        num_workers=data_config['num_workers'],
+        pin_memory=True,
+        worker_init_fn=lambda x: torch.manual_seed(data_config.get('worker_init_seed', 42) + x)
+    )
+
     train_loader = DataLoader(
         train_dataset,
         batch_size=data_config['batch_size'],
         shuffle=True,
         num_workers=data_config['num_workers'],
-        pin_memory=True
+        pin_memory=True,
+        worker_init_fn=lambda x: torch.manual_seed(data_config.get('worker_init_seed', 42) + x)
     )
     
     test_loader = DataLoader(
@@ -75,7 +109,8 @@ def get_data_loaders(config):
         batch_size=data_config['batch_size'],
         shuffle=False,
         num_workers=data_config['num_workers'],
-        pin_memory=True
+        pin_memory=True,
+        worker_init_fn=lambda x: torch.manual_seed(data_config.get('worker_init_seed', 42) + x)
     )
     
-    return train_loader, test_loader
+    return train_loader, test_loader, val_loader
