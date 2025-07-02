@@ -4,7 +4,7 @@ from .PE.sincos_2d import SinCos2DPositionalEncoding, SinCos2DPositionalEncoding
 from .PE.rope_2d import RoPE2DPositionalEncoding
 from .PE.stft import STFTPositionalEncoding, STFTPositionalEncodingConcat
 from .PE.wavelets import WaveletPositionalEncoding, WaveletPositionalEncodingConcat
-
+from .PE.learnable import LearnablePositionalEncoding
 
 def build_model(config):
     """Build ViT model with specified positional encoding"""
@@ -105,7 +105,10 @@ def build_model(config):
             )
         else:
             raise ValueError(f"Unsupported mode '{pe_mode}' for wavelet encoding")
-            
+    elif pe_type == 'learnable':
+        if pe_mode != 'add':
+            raise ValueError("Learnable positional encoding only supports 'add' mode")
+        pos_encoder = LearnablePositionalEncoding(dim, h_patches, w_patches)
     else:
         raise ValueError(f"Unsupported positional encoding type: {pe_type}")
     

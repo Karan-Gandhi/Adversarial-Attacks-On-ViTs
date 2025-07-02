@@ -12,7 +12,7 @@ model:
   
   # Positional Encoding Configuration
   positional_encoding:
-    type: "2d_rope"  # Options: "2d_sincos", "2d_rope", "stft", "wavelets"
+    type: "2d_sincos"  # Options: "2d_sincos", "2d_rope", "stft", "wavelets"
     mode: "add"  # Options: "add", "concat" (concat not applicable for 2d_rope)
     pos_dim: 64  # Only used when mode is "concat"
     proj_dim: 192  # Only used when mode is "concat" (dim - pos_dim)

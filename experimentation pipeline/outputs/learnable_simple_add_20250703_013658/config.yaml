@@ -12,22 +12,11 @@ model:
   
   # Positional Encoding Configuration
   positional_encoding:
-    type: "2d_rope"  # Options: "2d_sincos", "2d_rope", "stft", "wavelets"
+    type: "learnable"  # Options: "2d_sincos", "2d_rope", "stft", "wavelets"
     mode: "add"  # Options: "add", "concat" (concat not applicable for 2d_rope)
     pos_dim: 64  # Only used when mode is "concat"
     proj_dim: 192  # Only used when mode is "concat" (dim - pos_dim)
     
-    # STFT-specific parameters
-    stft:
-      window_size: 16
-      hop_length: 8
-      n_fft: 32
-    
-    # Wavelet-specific parameters
-    wavelets:
-      wavelet_type: "db4"  # daubechies-4
-      levels: 3
-
 data:
   # Data parameters
   dataset: "cifar10"
@@ -36,11 +25,8 @@ data:
   
   # Data augmentation
   augmentation:
-    random_crop: false
+    random_crop: true
     random_horizontal_flip: true
-    rand_augment: true
-    rand_augment_num_ops: 2
-    rand_augment_magnitude: 9
     normalize: true
     
   # Normalization parameters for CIFAR-10
@@ -49,7 +35,7 @@ data:
 
 training:
   # Training parameters
-  num_epochs: 100
+  num_epochs: 50
   learning_rate: 3e-4
   weight_decay: 1e-4
   optimizer: "adamw"
@@ -146,7 +132,7 @@ testing:
   
 # Experiment configuration
 experiment:
-  name: "vit_pe_experiment"
+  name: "learnable_simple_add"
   description: "Adversarial attacks on ViT with different positional encodings"
   seed: 42
   device: "cuda"

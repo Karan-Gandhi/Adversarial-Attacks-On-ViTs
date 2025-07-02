@@ -6,6 +6,7 @@ from .sincos_2d import SinCos2DPositionalEncoding, SinCos2DPositionalEncodingCon
 from .rope_2d import RoPE2DPositionalEncoding
 from .stft import STFTPositionalEncoding, STFTPositionalEncodingConcat
 from .wavelets import WaveletPositionalEncoding, WaveletPositionalEncodingConcat
+from .learnable import LearnablePositionalEncoding
 
 __all__ = [
     'SinCos2DPositionalEncoding',
@@ -14,5 +15,6 @@ __all__ = [
     'STFTPositionalEncoding',
     'STFTPositionalEncodingConcat',
     'WaveletPositionalEncoding',
-    'WaveletPositionalEncodingConcat'
+    'WaveletPositionalEncodingConcat',
+    'LearnablePositionalEncoding'
 ]

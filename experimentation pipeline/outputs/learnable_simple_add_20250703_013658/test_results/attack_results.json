@@ -1,0 +1,50 @@
+{
+  "phase_weak": {
+    "clean_accuracy": 80.28,
+    "adversarial_accuracy": 31.430000000000003,
+    "accuracy_drop": 48.849999999999994,
+    "total_samples": 10000
+  },
+  "phase_strong": {
+    "clean_accuracy": 80.28,
+    "adversarial_accuracy": 27.04,
+    "accuracy_drop": 53.24,
+    "total_samples": 10000
+  },
+  "magnitude_weak": {
+    "clean_accuracy": 80.28,
+    "adversarial_accuracy": 31.28,
+    "accuracy_drop": 49.0,
+    "total_samples": 10000
+  },
+  "magnitude_strong": {
+    "clean_accuracy": 80.28,
+    "adversarial_accuracy": 26.029999999999998,
+    "accuracy_drop": 54.25,
+    "total_samples": 10000
+  },
+  "normal_weak": {
+    "clean_accuracy": 80.28,
+    "adversarial_accuracy": 31.95,
+    "accuracy_drop": 48.33,
+    "total_samples": 10000
+  },
+  "normal_strong": {
+    "clean_accuracy": 80.28,
+    "adversarial_accuracy": 30.240000000000002,
+    "accuracy_drop": 50.04,
+    "total_samples": 10000
+  },
+  "low_freq": {
+    "clean_accuracy": 80.28,
+    "adversarial_accuracy": 31.85,
+    "accuracy_drop": 48.43,
+    "total_samples": 10000
+  },
+  "high_freq": {
+    "clean_accuracy": 80.28,
+    "adversarial_accuracy": 31.86,
+    "accuracy_drop": 48.42,
+    "total_samples": 10000
+  }
+}

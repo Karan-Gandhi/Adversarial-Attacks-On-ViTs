@@ -12,8 +12,8 @@ model:
   
   # Positional Encoding Configuration
   positional_encoding:
-    type: "2d_rope"  # Options: "2d_sincos", "2d_rope", "stft", "wavelets"
-    mode: "add"  # Options: "add", "concat" (concat not applicable for 2d_rope)
+    type: "2d_sincos"  # Options: "2d_sincos", "2d_rope", "stft", "wavelets"
+    mode: "concat"  # Options: "add", "concat" (concat not applicable for 2d_rope)
     pos_dim: 64  # Only used when mode is "concat"
     proj_dim: 192  # Only used when mode is "concat" (dim - pos_dim)
     
@@ -42,6 +42,7 @@ data:
     rand_augment_num_ops: 2
     rand_augment_magnitude: 9
     normalize: true
+
     
   # Normalization parameters for CIFAR-10
   normalize_mean: [0.4914, 0.4822, 0.4465]

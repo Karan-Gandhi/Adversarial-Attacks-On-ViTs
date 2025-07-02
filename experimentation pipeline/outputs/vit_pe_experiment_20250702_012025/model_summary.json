@@ -1,0 +1,10 @@
+{
+  "model_type": "Vision Transformer",
+  "positional_encoding": "2d_sincos (add mode)",
+  "total_parameters": 3173898,
+  "image_size": 32,
+  "patch_size": 4,
+  "dim": 256,
+  "depth": 6,
+  "heads": 8
+}

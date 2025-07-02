@@ -22,7 +22,7 @@ def get_data_transforms(config):
     if data_config['augmentation']['random_horizontal_flip']:
         train_transforms.append(transforms.RandomHorizontalFlip())
 
-    if data_config['augmentation']['rand_augment']:
+    if 'rand_augment' in data_config and data_config['augmentation']['rand_augment']:
         train_transforms.append(transforms.RandAugment(
             num_ops=data_config['augmentation']['rand_augment_num_ops'],
             magnitude=data_config['augmentation']['rand_augment_magnitude']
